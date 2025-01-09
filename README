@@ -26,7 +26,7 @@ Go to Sweet tv addon settings
 [More info](https://kodi.wiki/view/Add-on:PVR_IPTV_Simple_Client)
 
 **Add-on Settings**
-* 1. Go to Add-on setings and set the m3u playlist location on the General page.
+* 1. Go to Add-on settings and set the m3u playlist location on the General page.
 * 2. Set the EPG location (EPG -> XMLTV path).
 
 # If you encounter any issues, please open a [ticket](https://github.com/david-hazi/plugin.video.sweettv/issues/new)
