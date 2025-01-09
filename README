@@ -31,7 +31,3 @@ Go to Sweet tv addon settings
 
 # If you encounter any issues, please open a [ticket](https://github.com/david-hazi/plugin.video.sweettv/issues/new)
 
-# Changelog
-
-V0.1.2
-- Some fixes and features are added, like periodic token refresh, EPG generation, English translation, etc...
