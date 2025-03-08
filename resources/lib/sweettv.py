@@ -5,12 +5,12 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 import routing
-import six
 import urllib3
 import xbmc
 import xbmcgui
 import xbmcplugin
 import xbmcvfs
+import six
 from six.moves.urllib.parse import urlencode
 
 urllib3.disable_warnings()
@@ -27,7 +27,6 @@ plugin = routing.Plugin()
 
 
 def getTime(x, y):
-    data = ''
     if y == 'date':
         data = '%Y-%m-%d'
     elif y == 'hour':
@@ -101,7 +100,7 @@ def channelList():
             tree = ET.ElementTree(xml_root)
             if sys.version_info[:3] >= (3, 9, 0):
                 ET.indent(tree, space="  ", level=0)
-            xmlstr = ET.tostring(xml_root, encoding='utf-8', xml_declaration=True)
+            xmlstr = '<?xml version="1.0" encoding="utf-8"?>\n' + ET.tostring(xml_root, encoding='utf-8')
             path_m3u = helper.get_setting('path_m3u')
             file_name = helper.get_setting('name_epg')
             if path_m3u != '' and file_name != '':
@@ -129,6 +128,13 @@ def channelList():
                     data += '#EXTINF:0 tvg-id="%s.id.com" tvg-name="%s" tvg-logo="%s" group-title="%s" %s,%s\nplugin://plugin.video.sweettv/playvid/%s|null\n' % (
                         cid, cName, img, category_list, catchup, cName, cid)
 
+          # Step 1: Ensure 'data' is Unicode (if it's not already)
+            if isinstance(data, str):  # If it's a byte string
+                data = data.decode('utf-8')  # Convert to Unicode
+
+          # Step 2: Encode the data to UTF-8
+            if isinstance(data, unicode):  # If it's a Unicode string
+                data = data.encode('utf-8')  # Convert to UTF-8 byte string
             file_name = helper.get_setting('name_m3u')
             if path_m3u != '' and file_name != '':
                 f = xbmcvfs.File(path_m3u + file_name, 'w')
