@@ -244,6 +244,14 @@ def getEPG(epgid):
             mainpage(epgid)
         else:
             return
+        
+    if helper.get_setting('reverse_order') == 'Newest':
+        reverse_order = True
+    elif helper.get_setting('reverse_order') == 'Oldest':
+        reverse_order = False
+
+    tv_shows = []
+
     if jsdata.get("status", None) == 'OK':
         progs = jsdata['list'][0]['epg']
         for p in progs:
@@ -259,14 +267,21 @@ def getEPG(epgid):
                 ID = epgid + '|' + pid
 
                 mod = plugin.url_for(playvid, videoid=ID)
-                fold = False
-                ispla = True
-                imag = p.get('preview_url', None)
+                imag = p.get('preview_url_ext', None)
                 art = {'icon': imag, 'fanart': helper.addon.getAddonInfo('fanart')}
 
                 info = {'title': title, 'plot': ''}
 
-                helper.add_item(title, mod, playable=ispla, info=info, art=art, folder=fold, content='videos')
+                tv_show_data = {
+                    "title": title,
+                    "url": mod,
+                    "info": info,
+                    "art": art
+                }
+                tv_shows.append(tv_show_data)
+
+        for s in reversed(tv_shows) if reverse_order is True else tv_shows:
+            helper.add_item(s["title"], s["url"], playable=True, info=s["info"], art=s["art"], folder=False, content='videos')
 
     helper.eod()
 
