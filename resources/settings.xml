@@ -5,6 +5,10 @@
         <setting id="playerType" type="select" label="Player type" values="ISA|ffmpeg" default="ISA" />
         <setting id="countryCode" type="text" label="Country code" default="hu" />
     </category>
+    <category label="Replay">
+        <setting label="Replay settings:" type="lsep"/>
+        <setting id="reverse_order" type="select" label="Order by" values="Newest|Oldest" default="Newest" />
+    </category>
 	<category label="M3U list creator">
         <setting label="M3U List (File Name and Destination Directory)" type="lsep"/>
         <setting label="M3U filename" type="text" id="name_m3u" default="iptv.m3u8"/>
