@@ -12,6 +12,9 @@
         <setting label="Directory path" type="folder" id="path_m3u" source="auto" option="writeable"/>
 		<setting type="action" action="RunPlugin(plugin://plugin.video.sweettv/listM3U)" label="Create M3U and EPG list" option="close"/>
 	</category>
+    <category label="Account">
+        <setting type="action" action="RunPlugin(plugin://plugin.video.sweettv/logout)" label="Logout" option="close"/>
+    </category>
     <setting id="logged" value="" default="false"/>
     <setting id="refresh_token" value="" default=""/>
     <setting id="uuid" value="" default=""/>

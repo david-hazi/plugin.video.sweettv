@@ -183,7 +183,6 @@ def initSettings():
 def startwt():
     helper.add_item('[B]TV[/B]', plugin.url_for(mainpage, mainid='live'), folder=True)
     helper.add_item('[B]Replay[/B]', plugin.url_for(mainpage, mainid='replay'), folder=True)
-    helper.add_item('[B]Logout[/B]', plugin.url_for(logout), folder=False)
 
 
 def refreshToken():
