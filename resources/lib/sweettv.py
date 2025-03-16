@@ -132,7 +132,7 @@ def refreshChannelList():
             file_name = helper.get_setting('name_m3u')
             if path_m3u != '' and file_name != '':
                 f = xbmcvfs.File(path_m3u + file_name, 'w')
-                f.write(data)
+                f.write(data.encode("utf-8"))
                 f.close()
     else:
         xbmc.log("Failed to update channel list", xbmc.LOGERROR)
