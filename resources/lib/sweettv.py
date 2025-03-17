@@ -69,11 +69,6 @@ def refreshChannelList():
             for json_channel in jsdata.get("list"):
                 if "epg" in json_channel:
                     for json_epg in json_channel.get("epg"):
-                        if json_channel.get("catchup") and json_channel.get("available"):
-                            catchup = {"catchup-id": str(json_epg.get("id"))}
-                        else:
-                            catchup = {"catchup-id": "null"}
-
                         programme_metadata = {
                             "start": time.strftime('%Y%m%d%H%M%S',
                                                    time.localtime(json_epg.get("time_start"))) + " +0100",
@@ -81,7 +76,10 @@ def refreshChannelList():
                                                   time.localtime(json_epg.get("time_stop") - 1)) + " +0100",
                             "channel": str(json_channel.get("id")) + ".id.com"
                         }
-                        programme_metadata.update(catchup)
+
+                        if json_channel.get("catchup") and json_channel.get("available") and json_epg.get("available"):
+                            catchup = {"catchup-id": str(json_epg.get("id"))}
+                            programme_metadata.update(catchup)
 
                         programme = ET.SubElement(xml_root, "programme", attrib=programme_metadata)
                         if json_epg.get("available") == False and json_channel.get("live_blackout") == True:
@@ -122,8 +120,8 @@ def refreshChannelList():
                     category_list = category_list[:-1]
 
                     if json_channel.get('catchup', None):
-                        catchup = 'catchup="default" catchup-days="%d" catchup-source="plugin://plugin.video.sweettv/playvid/%s|{catchup-id}"' % (
-                            int(json_channel.get('catchup_duration')), cid)
+                        catchup = 'catchup="vod" catchup-source="plugin://plugin.video.sweettv/playvid/%s|{catchup-id}"' % (
+                            cid)
                     else:
                         catchup = ''
                     data += '#EXTINF:0 tvg-id="%s.id.com" tvg-name="%s" tvg-logo="%s" group-title="%s" %s,%s\nplugin://plugin.video.sweettv/playvid/%s|null\n' % (
@@ -244,7 +242,7 @@ def getEPG(epgid):
             mainpage(epgid)
         else:
             return
-        
+
     if helper.get_setting('reverse_order') == 'Newest':
         reverse_order = True
     elif helper.get_setting('reverse_order') == 'Oldest':
@@ -281,7 +279,8 @@ def getEPG(epgid):
                 tv_shows.append(tv_show_data)
 
         for s in reversed(tv_shows) if reverse_order is True else tv_shows:
-            helper.add_item(s["title"], s["url"], playable=True, info=s["info"], art=s["art"], folder=False, content='videos')
+            helper.add_item(s["title"], s["url"], playable=True, info=s["info"], art=s["art"], folder=False,
+                            content='videos')
 
     helper.eod()
 
