@@ -202,7 +202,7 @@ def refreshToken():
 
         xbmc.log("refresh " + str(jsdata), xbmc.LOGDEBUG)
 
-        if jsdata.get("result", None) == 'COMPLETED' or jsdata.get("result", None) == 'OK':
+        if jsdata.get("access_token", None):
             xbmc.log("Token refresh success", xbmc.LOGDEBUG)
             helper.set_setting('bearer', 'Bearer ' + str(jsdata.get("access_token")))
             helper.headers.update({'authorization': helper.get_setting('bearer')})
@@ -240,14 +240,6 @@ def getEPG(epgid):
     }
     url = 'https://api.sweet.tv/TvService/GetChannels.json'
     jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True)
-
-    if jsdata.get("code", None) == 16:
-        helper.set_setting('bearer', '')
-        refr = refreshToken()
-        if refr:
-            mainpage(epgid)
-        else:
-            return
 
     if helper.get_setting('reverse_order') == 'Newest':
         reverse_order = True
@@ -294,14 +286,6 @@ def getEPG(epgid):
 @plugin.route('/mainpage/<mainid>')
 def mainpage(mainid):
     jsdata = refreshChannelList()
-
-    if jsdata.get("code", None) == 16:
-        helper.set_setting('bearer', '')
-        refr = refreshToken()
-        if refr:
-            mainpage(mainid)
-        else:
-            return
 
     if jsdata.get("status", None) == 'OK':
         for j in jsdata.get('list', []):
@@ -523,14 +507,6 @@ def playvid(videoid):
 
         url = helper.base_api_url.format('TvService/OpenStream.json')
         jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True)
-
-        if jsdata.get("code", None) == 16:
-            helper.set_setting('bearer', '')
-            refr = refreshToken()
-            if refr:
-                playvid(videoid)
-            else:
-                return
 
         if jsdata.get("code", None) == 13:
             xbmcgui.Dialog().notification('Sweet.tv', 'Recording unavailable', xbmcgui.NOTIFICATION_INFO)
