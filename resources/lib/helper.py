@@ -76,20 +76,34 @@ class Helper(object):
                 "mac": self.mac,
                 "firmware": {
                     "versionCode": 1301,
-                    "versionString": self.version
+                    "versionString": self.version,
+                    "modules": []
                 },
-                "sub_type": 0,
+                "sub_type": "DST_Unknown",
                 "uuid": self.uuid,
                 "screen_info": {
-                    "aspectRatio": 6,
                     "width": 1920,
-                    "height": 1080
+                    "height": 1080,
+                    "aspectRatio": "AR_16_9"
                 },
                 "application": {
                     "type": "AT_SWEET_TV_Player"
                 },
+                "vendor": "unknown",
                 "supported_drm": {
-                    "widevine_modular": True
+                    "aes128": False,
+                    "widevineModular": True,
+                    "widevineClassic": False,
+                    "playReady": False,
+                    "fairPlay": False
+                },
+                "guid": "",
+                "system": "",
+                "system_info": {
+                    "network_connection_type": "NCT_Unknown",
+                    "os_version": "23",
+                    "total_memory": 2,
+                    "hardware": ""
                 },
                 "advertisingId": str(uuid.uuid4())
             }
