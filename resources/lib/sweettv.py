@@ -36,6 +36,9 @@ def getTime(x, y):
 
 
 def refreshChannelList():
+    if not helper.get_setting('logged'):
+        return
+
     timestamp = int(time.time())
     json_data = {
         'epg_limit_prev': 10,
@@ -185,6 +188,8 @@ def startwt():
 
 
 def refreshToken():
+    if not helper.get_setting('logged'):
+        return
     # Reduce the token validity to refresh it a bit earlier
     # In this case we always will have a valid Bearer and token
     if int(time.time()) - int(helper.get_setting('access_token_last_update')) > int(int(
@@ -426,7 +431,7 @@ def login():
                                params={"data": "sweet.tv/addDevice?connectCode={}".format(auth_code)}, result=False)
 
     path = None
-    if resp.status_code is 200:
+    if resp.status_code == 200:
         try:
             path = xbmcvfs.translatePath('special://temp') + "{}.png".format(auth_code)
         except:
@@ -466,6 +471,10 @@ def login():
             helper.set_setting('bearer', 'Bearer ' + str(access_token))
             helper.set_setting('refresh_token', str(refresh_token))
             helper.set_setting('logged', 'true')
+            helper.set_setting('access_token_last_update', str(int(time.time())))
+
+            access_token_lifetime = int(jsdata.get("expires_in"))
+            helper.set_setting('access_token_lifetime', str(access_token_lifetime))
 
             refreshChannelList()
         else:
