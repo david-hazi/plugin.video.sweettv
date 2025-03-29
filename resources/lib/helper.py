@@ -7,6 +7,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
+import xbmcvfs
 from six.moves.urllib.parse import quote
 
 from resources.lib.brotlipython import brotlidec
@@ -56,6 +57,11 @@ class Helper(object):
         self.mac = self.get_setting('mac')
         self.access_token_last_update = self.get_setting('access_token_last_update')
         self.access_token_lifetime = self.get_setting('access_token_lifetime')
+
+        try:
+            self.channelListPath = xbmcvfs.translatePath('special://temp') + "channelList.json"
+        except:
+            self.channelListPath = xbmc.translatePath('special://temp') + "channelList.json"
 
         self.headers = {
             'Host': 'api.sweet.tv',
@@ -133,6 +139,14 @@ class Helper(object):
 
     def dialog_choice(self, heading, message, agree, disagree):
         return xbmcgui.Dialog().yesno(heading, message, yeslabel=agree, nolabel=disagree)
+
+    def get_channel_list(self):
+        f = xbmcvfs.File(self.channelListPath, 'rb')
+        jsdata = f.read()
+        x = requests.models.Response()
+        x._content = jsdata
+        f.close()
+        return x.json()
 
     def add_item(self, title, url, playable=False, info=None, art=None, content=None, folder=True, contextmenu=None):
 

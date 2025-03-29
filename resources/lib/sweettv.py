@@ -54,7 +54,10 @@ def refreshChannelList():
     }
 
     url = helper.base_api_url.format('TvService/GetChannels.json')
-    jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True)
+    jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True, result=False)
+
+    jsdata_content = jsdata.content
+    jsdata = jsdata.json()
 
     categories = {}
 
@@ -136,6 +139,10 @@ def refreshChannelList():
                 f = xbmcvfs.File(path_m3u + file_name, 'w')
                 f.write(data.encode("utf-8"))
                 f.close()
+
+            f = xbmcvfs.File(helper.channelListPath, 'wb')
+            f.write(jsdata_content)
+            f.close()
     else:
         xbmc.log("Failed to update channel list", xbmc.LOGERROR)
         xbmc.log("Failed to update channel list " + str(jsdata), xbmc.LOGDEBUG)
@@ -285,7 +292,7 @@ def getEPG(epgid):
 
 @plugin.route('/mainpage/<mainid>')
 def mainpage(mainid):
-    jsdata = refreshChannelList()
+    jsdata = helper.get_channel_list()
 
     if jsdata.get("status", None) == 'OK':
         for j in jsdata.get('list', []):
@@ -554,7 +561,7 @@ def listM3U():
                                           xbmcgui.NOTIFICATION_ERROR)
             return
         xbmcgui.Dialog().notification('Sweet tv', 'Generating M3U list.', xbmcgui.NOTIFICATION_INFO)
-        channels = refreshChannelList()
+        channels = helper.get_channel_list()
         if channels.get("status", None) == 'OK':
             xbmcgui.Dialog().notification('Sweet.tv', 'M3U list generated.', xbmcgui.NOTIFICATION_INFO)
     else:
