@@ -12,11 +12,14 @@ if __name__ == '__main__':
     initSettings()
 
     while not monitor.abortRequested():
-        refreshToken()
+        try:
+            refreshToken()
 
-        if int(time.time()) - refreshChannelListTimer > 15 * 60:
-            refreshChannelList()
-            refreshChannelListTimer = int(time.time())
+            if int(time.time()) - refreshChannelListTimer > 15 * 60:
+                refreshChannelList()
+                refreshChannelListTimer = int(time.time())
 
-        if monitor.waitForAbort(60):
-            break
+            if monitor.waitForAbort(60):
+                break
+        except:
+            pass
