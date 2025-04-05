@@ -21,5 +21,5 @@ if __name__ == '__main__':
 
             if monitor.waitForAbort(60):
                 break
-        except:
-            pass
+        except Exception as e:
+            xbmc.log("Service exception: " + str(e), xbmc.LOGERROR)

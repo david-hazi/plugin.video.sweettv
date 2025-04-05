@@ -144,7 +144,8 @@ class Helper(object):
         f = xbmcvfs.File(self.channelListPath, 'rb')
         jsdata = f.read()
         x = requests.models.Response()
-        x._content = jsdata
+        x._content = jsdata.encode('utf-8')
+        x.encoding = 'utf-8'
         f.close()
         return x.json()
 
