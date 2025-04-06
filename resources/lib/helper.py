@@ -196,19 +196,25 @@ class Helper(object):
             data = {}
         resp = None
         params = params if params else self.params
-        if method == 'get':
-            resp = self.sess.get(url, headers=headers, cookies=cookies, timeout=30, params=params, verify=False,
-                                 allow_redirects=allow)
-        elif method == 'post':
-            if json_data:
-                resp = self.sess.post(url, headers=headers, json=data, cookies=cookies, timeout=30, params=params,
-                                      verify=False, allow_redirects=allow)
-            else:
-                resp = self.sess.post(url, headers=headers, data=data, cookies=cookies, timeout=30, params=params,
-                                      verify=False, allow_redirects=allow)
-        elif method == 'delete':
-            resp = self.sess.delete(url, headers=headers, cookies=cookies, timeout=30, params=params, verify=False,
-                                    allow_redirects=allow)
+
+        try:
+            if method == 'get':
+                resp = self.sess.get(url, headers=headers, cookies=cookies, timeout=30, params=params, verify=False,
+                                     allow_redirects=allow)
+            elif method == 'post':
+                if json_data:
+                    resp = self.sess.post(url, headers=headers, json=data, cookies=cookies, timeout=30, params=params,
+                                          verify=False, allow_redirects=allow)
+                else:
+                    resp = self.sess.post(url, headers=headers, data=data, cookies=cookies, timeout=30, params=params,
+                                          verify=False, allow_redirects=allow)
+            elif method == 'delete':
+                resp = self.sess.delete(url, headers=headers, cookies=cookies, timeout=30, params=params, verify=False,
+                                        allow_redirects=allow)
+
+        except requests.exceptions.RequestException as e:
+            xbmc.log("Requests exception: " + str(e), xbmc.LOGERROR)
+
         if result:
             return resp.json() if json else resp_text(resp)
         else:

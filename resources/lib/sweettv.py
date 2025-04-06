@@ -54,7 +54,11 @@ def refreshChannelList():
     }
 
     url = helper.base_api_url.format('TvService/GetChannels.json')
-    jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True, result=False)
+    jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True,
+                                 result=False)
+
+    if jsdata is None:
+        return
 
     jsdata_content = jsdata.content
     jsdata = jsdata.json()
@@ -207,6 +211,9 @@ def refreshToken():
         jsdata = helper.request_sess(helper.token_url, 'post', headers=helper.headers, data=json_data, json=True,
                                      json_data=True)
 
+        if jsdata is None:
+            return
+
         xbmc.log("refresh " + str(jsdata), xbmc.LOGDEBUG)
 
         if jsdata.get("access_token", None):
@@ -247,6 +254,9 @@ def getEPG(epgid):
     }
     url = 'https://api.sweet.tv/TvService/GetChannels.json'
     jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True)
+
+    if jsdata is None:
+        return
 
     if helper.get_setting('reverse_order') == 'Newest':
         reverse_order = True
@@ -412,6 +422,10 @@ def show_popup(auth_code, qrcode_path=None):
 def login():
     jsdata = helper.request_sess(helper.auth_url, 'post', headers=helper.headers, data=helper.json_data, json=True,
                                  json_data=True)
+
+    if jsdata is None:
+        return
+
     auth_code = jsdata.get("auth_code")
     if jsdata.get("result") != 'OK' or not auth_code:
         helper.notification('Information', 'Login error')
@@ -449,6 +463,10 @@ def login():
                 return
             jsdata = helper.request_sess(helper.check_auth_url, 'post', headers=headers, data=json_data, json=True,
                                          json_data=False)
+
+            if jsdata is None:
+                return
+
             xbmc.log("login " + str(jsdata), xbmc.LOGDEBUG)
             if jsdata.get("result") == "COMPLETED":
                 result = jsdata
@@ -514,6 +532,9 @@ def playvid(videoid):
 
         url = helper.base_api_url.format('TvService/OpenStream.json')
         jsdata = helper.request_sess(url, 'post', headers=helper.headers, data=json_data, json=True, json_data=True)
+
+        if jsdata is None:
+            return
 
         if jsdata.get("code", None) == 13:
             xbmcgui.Dialog().notification('Sweet.tv', 'Recording unavailable', xbmcgui.NOTIFICATION_INFO)
