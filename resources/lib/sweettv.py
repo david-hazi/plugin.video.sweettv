@@ -15,7 +15,7 @@ from six.moves.urllib.parse import urlencode
 
 urllib3.disable_warnings()
 
-from .helper import Helper
+from .helper import Helper, ensure_binary, ensure_text
 
 base_url = sys.argv[0]
 try:
@@ -109,8 +109,9 @@ def refreshChannelList():
             tree = ET.ElementTree(xml_root)
             if sys.version_info[:3] >= (3, 9, 0):
                 ET.indent(tree, space="  ", level=0)
-            xmlstr = '<?xml version="1.0" encoding="utf-8"?>\n'.encode("utf-8") + ET.tostring(xml_root,
-                                                                                              encoding='utf-8')
+            xmlstr = u'<?xml version="1.0" encoding="utf-8"?>\n' + ensure_text(
+                ET.tostring(xml_root, encoding='utf-8')
+            )
             path_m3u = helper.get_setting('path_m3u')
             file_name = helper.get_setting('name_epg')
             if path_m3u != '' and file_name != '':
@@ -141,7 +142,7 @@ def refreshChannelList():
             file_name = helper.get_setting('name_m3u')
             if path_m3u != '' and file_name != '':
                 f = xbmcvfs.File(path_m3u + file_name, 'w')
-                f.write(data.encode("utf-8"))
+                f.write(ensure_text(data))
                 f.close()
 
             f = xbmcvfs.File(helper.channelListPath, 'wb')
@@ -441,8 +442,8 @@ def login():
             path = xbmcvfs.translatePath('special://temp') + "{}.png".format(auth_code)
         except:
             path = xbmc.translatePath('special://temp') + "{}.png".format(auth_code)
-        f = xbmcvfs.File(path, 'w')
-        f.write(resp.content)
+        f = xbmcvfs.File(path, 'wb')
+        f.write(ensure_binary(resp.content))
         f.close()
 
     def delayed_close():

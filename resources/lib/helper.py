@@ -1,6 +1,7 @@
 import random
 import sys
 import uuid
+import json
 
 import requests
 import xbmc
@@ -8,6 +9,7 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 import xbmcvfs
+from six import binary_type, text_type
 from six.moves.urllib.parse import quote
 
 from resources.lib.brotlipython import brotlidec
@@ -22,6 +24,22 @@ def resp_text(resp):
     response_content = resp.text
 
     return response_content.replace("\'", '"')
+
+
+def ensure_text(value, encoding='utf-8', errors='strict'):
+    if isinstance(value, text_type):
+        return value
+    if isinstance(value, binary_type):
+        return value.decode(encoding, errors)
+    return text_type(value)
+
+
+def ensure_binary(value, encoding='utf-8'):
+    if isinstance(value, binary_type):
+        return value
+    if isinstance(value, text_type):
+        return value.encode(encoding)
+    return text_type(value).encode(encoding)
 
 
 class Helper(object):
@@ -143,11 +161,8 @@ class Helper(object):
     def get_channel_list(self):
         f = xbmcvfs.File(self.channelListPath, 'rb')
         jsdata = f.read()
-        x = requests.models.Response()
-        x._content = jsdata.encode('utf-8')
-        x.encoding = 'utf-8'
         f.close()
-        return x.json()
+        return json.loads(ensure_text(jsdata, errors='replace'))
 
     def add_item(self, title, url, playable=False, info=None, art=None, content=None, folder=True, contextmenu=None):
 
